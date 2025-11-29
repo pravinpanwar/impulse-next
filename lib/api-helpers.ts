@@ -1,12 +1,12 @@
-import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/app/api/auth/[...nextauth]/route';
 
 export async function getUserId(request: NextRequest): Promise<number | null> {
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-  if (!token || !token.id) {
+  const session = await auth();
+  if (!session?.user?.id) {
     return null;
   }
-  return parseInt(token.id as string);
+  return parseInt(session.user.id as string);
 }
 
 export function unauthorizedResponse() {
