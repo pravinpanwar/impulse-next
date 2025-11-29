@@ -4,7 +4,7 @@ import { deleteDaily, updateDaily } from '@/lib/queries/dailies';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserId(request);
@@ -12,7 +12,8 @@ export async function DELETE(
       return unauthorizedResponse();
     }
 
-    const dailyId = parseInt(params.id);
+    const { id } = await params;
+    const dailyId = parseInt(id);
     const deleted = await deleteDaily(dailyId, userId);
     if (!deleted) {
       return NextResponse.json({ error: 'Daily not found' }, { status: 404 });
@@ -27,7 +28,7 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserId(request);
@@ -35,9 +36,10 @@ export async function PUT(
       return unauthorizedResponse();
     }
 
+    const { id } = await params;
     const body = await request.json();
     const { text, time } = body;
-    const dailyId = parseInt(params.id);
+    const dailyId = parseInt(id);
 
     if (!text || !text.trim()) {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 });

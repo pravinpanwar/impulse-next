@@ -4,7 +4,7 @@ import { deleteNote } from '@/lib/queries/notes';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserId(request);
@@ -12,7 +12,8 @@ export async function DELETE(
       return unauthorizedResponse();
     }
 
-    const noteId = parseInt(params.id);
+    const { id } = await params;
+    const noteId = parseInt(id);
     const deleted = await deleteNote(noteId, userId);
     if (!deleted) {
       return NextResponse.json({ error: 'Note not found' }, { status: 404 });

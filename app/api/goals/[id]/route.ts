@@ -4,7 +4,7 @@ import { deleteGoal } from '@/lib/queries/goals';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserId(request);
@@ -12,7 +12,8 @@ export async function DELETE(
       return unauthorizedResponse();
     }
 
-    const goalId = parseInt(params.id);
+    const { id } = await params;
+    const goalId = parseInt(id);
     const deleted = await deleteGoal(goalId, userId);
     if (!deleted) {
       return NextResponse.json({ error: 'Goal not found' }, { status: 404 });

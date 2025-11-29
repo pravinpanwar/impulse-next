@@ -55,7 +55,7 @@ async function initializeDatabase() {
       console.log(`  ✓ Schema executed successfully`);
       
       // List all tables to confirm
-      const [tables] = await connection.query<Array<{Tables_in_impulse_db: string}>>('SHOW TABLES');
+      const [tables] = await connection.query('SHOW TABLES') as [Array<{Tables_in_impulse_db: string}>, any];
       console.log(`\nCreated tables:`);
       tables.forEach((row) => {
         const tableName = Object.values(row)[0];

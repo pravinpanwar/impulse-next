@@ -4,7 +4,7 @@ import { completeDaily, getDailyHistory } from '@/lib/queries/dailies';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserId(request);
@@ -12,7 +12,8 @@ export async function POST(
       return unauthorizedResponse();
     }
 
-    const dailyId = parseInt(params.id);
+    const { id } = await params;
+    const dailyId = parseInt(id);
     const completed = await completeDaily(dailyId, userId);
     
     if (!completed) {

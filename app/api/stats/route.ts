@@ -11,12 +11,17 @@ export async function GET(request: NextRequest) {
 
     const stats = await getUserStats(userId);
     if (!stats) {
-      return NextResponse.json({ error: 'Stats not found' }, { status: 404 });
+      // Return default stats instead of error if user exists but stats don't
+      return NextResponse.json({ xp: 0, streak: 0, last_login: null });
     }
 
     return NextResponse.json(stats);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching stats:', error);
+    // If it's a foreign key constraint error, return default stats
+    if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+      return NextResponse.json({ xp: 0, streak: 0, last_login: null });
+    }
     return serverErrorResponse();
   }
 }

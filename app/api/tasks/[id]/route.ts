@@ -4,7 +4,7 @@ import { deleteTask, updateTask } from '@/lib/queries/tasks';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserId(request);
@@ -12,7 +12,8 @@ export async function DELETE(
       return unauthorizedResponse();
     }
 
-    const taskId = parseInt(params.id);
+    const { id } = await params;
+    const taskId = parseInt(id);
     const deleted = await deleteTask(taskId, userId);
     if (!deleted) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
@@ -27,7 +28,7 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserId(request);
@@ -35,9 +36,10 @@ export async function PUT(
       return unauthorizedResponse();
     }
 
+    const { id } = await params;
     const body = await request.json();
     const { text, time } = body;
-    const taskId = parseInt(params.id);
+    const taskId = parseInt(id);
 
     if (!text || !text.trim()) {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 });

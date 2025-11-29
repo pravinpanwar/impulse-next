@@ -341,7 +341,7 @@ export default function DashboardPage() {
                             </div>
                         </div>
                         {daily.completed_today ? (
-                            <CheckCircle className="text-blue-500 flex-shrink-0" size={18} className="sm:w-5 sm:h-5"/>
+                            <CheckCircle className="text-blue-500 flex-shrink-0 w-[18px] h-[18px] sm:w-5 sm:h-5"/>
                         ) : (
                             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                                 <BarChart2 size={14} className="sm:w-4 sm:h-4 text-gray-700 group-hover:text-blue-400 transition-colors" />

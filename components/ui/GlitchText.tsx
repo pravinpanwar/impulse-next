@@ -1,6 +1,6 @@
 interface GlitchTextProps {
   text: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
   className?: string;
 }
 
