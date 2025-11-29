@@ -62,6 +62,18 @@ const config: NextAuthConfig = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true, // Required for Vercel/production deployments
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}authjs.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+  },
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
